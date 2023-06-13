@@ -3,9 +3,9 @@ import { Schema, model } from 'mongoose';
 import validator from 'validator';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { roles } from '../../../config/roles';
 import ApiError from '../../../utils/ApiError';
 import httpStatus = require('http-status');
+import UserRoles from './UserRoles';
 
 const userSchema: Schema = new Schema<IUser>(
   {
@@ -36,14 +36,10 @@ const userSchema: Schema = new Schema<IUser>(
       },
       private: true,
     },
-    passwordConfirm: {
-      type: String,
-      required: [true, 'Please confirm your password'],
-    },
     role: {
       type: String,
-      enum: roles,
-      default: 'user',
+      enum: UserRoles,
+      default: UserRoles.USER,
     },
     isEmailVerified: {
       type: Boolean,
@@ -99,7 +95,7 @@ userSchema.methods.correctPassword = async function (candidatePassword: string) 
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.methods.changedPasswordAfter = function (JWTTimestamp: any) {
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp: number) {
   if (this.passwordChangedAt) {
     const changedTimestamp = this.passwordChangedAt.getTime();
     return JWTTimestamp * 1000 < changedTimestamp;
