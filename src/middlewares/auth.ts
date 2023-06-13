@@ -6,9 +6,10 @@ import ApiError from '../utils/ApiError';
 import * as httpStatus from 'http-status';
 import * as jwt from 'jsonwebtoken';
 import TokenService from '../services/token.service';
+import IUser from 'src/components/user/model/IUser';
 
 export default class AuthMiddleware {
-  private userRepository: MongoRepository;
+  private userRepository: MongoRepository<IUser>;
   private tokenService: TokenService;
   constructor() {
     this.userRepository = new MongoRepository(User);

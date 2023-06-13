@@ -9,7 +9,7 @@ import TokenService from './token.service';
 import Token from '../components/token/token';
 
 export default class Auth {
-  private userRepository: MongoRepository;
+  private userRepository: MongoRepository<IUser>;
   private tokenService: TokenService;
   constructor() {
     this.userRepository = new MongoRepository(User);
@@ -20,7 +20,7 @@ export default class Auth {
   public async signup(credentials: Partial<IUser>) {
     const validateResult = await validateSignup(credentials);
     if (!validateResult) return validateResult;
-    const user = await this.userRepository.createOne(validateResult);
+    const user = await this.userRepository.create(validateResult);
     return user;
   }
 

@@ -1,5 +1,4 @@
-import { Model, model, Query } from 'mongoose';
-import APIFeatures from '../utils/ApiFeatures';
+import { Model } from 'mongoose';
 import IRepository from './IRepository';
 
 export default class MongoRepository<T> implements IRepository<T> {

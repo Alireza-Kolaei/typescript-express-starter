@@ -5,10 +5,12 @@ import * as cors from 'cors';
 import * as compression from 'compression';
 import * as morgan from 'morgan';
 import helmet from 'helmet';
+import * as monitor from 'express-status-monitor';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const xss = require('xss-clean');
 
 export default function bootstrap(app: Application) {
+  app.use(monitor());
   app.use(helmet());
   app.use(cors());
   app.use(urlencoded({ extended: true, limit: '10kb' }));

@@ -1,82 +1,70 @@
-import { NextFunction, Request, Response } from 'express';
-import ApiError from '../../utils/ApiError';
+import { NextFunction, Request, Response, ErrorRequestHandler } from 'express';
 
-const handleCastErrorDB = (err: any) => {
+import { Error as mongooseError } from 'mongoose';
+import { MongoError } from 'mongodb';
+import ApiError from '../../utils/ApiError';
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+
+const handleCastErrorDB = (err: mongooseError.CastError) => {
   const message = `Invalid ${err.path}: ${err.value}.`;
   return new ApiError(400, message);
 };
 
-const handleDuplicateFieldsDB = (err: any) => {
-  const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
-
+const handleDuplicateFieldsDB = (err: MongoError) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const value = err.message.match(/(["'])(\\?.)*?\1/)![0];
   const message = `Duplicate field value: ${value}. Please use another value!`;
   return new ApiError(400, message);
 };
 
-const handleValidationErrorDB = (err: any) => {
-  const errors = Object.values(err.errors).map((el: any) => el.message);
+const handleValidationErrorDB = (err: mongooseError.ValidationError) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
 
   const message = `Invalid input data. ${errors.join('. ')}`;
   return new ApiError(400, message);
 };
 
-const handleJWTError = () => new ApiError(401, 'Invalid token. Please log in again!');
-const handleJWTExpiredError = () => new ApiError(401, 'Your token has expired! Please log in again.');
+const handleJWTError = () => new ApiError(401, 'Please log in again!');
 
-const sendErrorDev = (err: any, req: Request, res: Response, next: NextFunction) => {
-  if (req.originalUrl.startsWith('/api')) {
+const sendErrorDev = (err: any, req: Request, res: Response) => {
+
     res.status(err.statusCode).json({
-      status: err.status,
+      success: false,
       error: err,
       message: err.message,
       stack: err.stack,
     });
-  }
+  
 };
 
-const sendErrorProd = (err: any, req: Request, res: Response, next: NextFunction) => {
-  if (req.originalUrl.startsWith('/api')) {
-    if (err.isOperational) {
-      return res.status(err.statusCode).json({
-        status: err.status,
-        message: err.message,
-      });
-    }
-    return res.status(500).json({
-      status: 'error',
-      message: 'Something went very wrong!',
-    });
-  }
-
+const sendErrorProd = (err: ApiError, req: Request, res: Response) => {
   if (err.isOperational) {
-    res.status(err.statusCode).render('error', {
-      title: 'Something went wrong!',
-      msg: err.message,
+    return res.status(err.statusCode).json({
+      success: false ,
+      message: err.message,
     });
   }
-  return res.status(err.statusCode).render('error', {
-    title: 'Something went wrong!',
-    msg: 'Please try again later.',
+  return res.status(500).json({
+    success: false,
+    message: 'Something went very wrong!',
   });
 };
 
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(err, req, res, next);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
-    let error = { ...err };
-    error.message = err.message;
+   let error = {...err};
+   
 
-    if (error.name === 'CastError') error = handleCastErrorDB(error);
-    if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-    if (error.name === 'ValidationError') error = handleValidationErrorDB(error);
-    if (error.name === 'JsonWebTokenError') error = handleJWTError();
-    if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
+    if (err instanceof mongooseError.CastError) error = handleCastErrorDB(err);
+    if (err instanceof MongoError && err.code === 11000) error = handleDuplicateFieldsDB(err);
+    if (err instanceof mongooseError.ValidationError) error = handleValidationErrorDB(err);
+    if (err instanceof JsonWebTokenError) error = handleJWTError();
 
-    sendErrorProd(error, req, res, next);
+    sendErrorProd(error , req, res);
   }
 };
 export { errorHandler };

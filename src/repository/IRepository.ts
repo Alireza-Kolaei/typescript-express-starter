@@ -19,6 +19,4 @@ export default interface IRepository<T> {
   deleteOne(params: Partial<T>): Promise<T | null>;
 
   deleteMany(where: Partial<T>): Promise<object>;
-
-  // count(params:any):Promise<number>
 }
