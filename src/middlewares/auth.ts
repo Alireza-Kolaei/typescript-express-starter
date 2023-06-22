@@ -35,6 +35,7 @@ export default class AuthMiddleware {
       if (!decoded) {
         throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Token is not valid');
       }
+      
       const currentUser = await this.userRepository.findByID(decoded.sub as string);
 
       if (!currentUser) {

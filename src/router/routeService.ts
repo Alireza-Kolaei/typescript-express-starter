@@ -3,6 +3,7 @@ import RouteEngine from './router';
 import authRouter from '../components/auth/router';
 import docsRouter from '../components/docs/router';
 import config from '../config/config';
+import userRouter from '../components/user/UserRouter';
 
 class RouteService {
   private app: Application;
@@ -14,10 +15,11 @@ class RouteService {
   }
 
   public bindRouters() {
-    this.router.registerRouter('/api/v1/auth', authRouter);
+    this.router.registerRouter('/api/v1/auth/', authRouter);
     if (config.env === 'development') {
       this.router.registerRouter('/api/v1/docs', docsRouter);
     }
+    this.router.registerRouter('/api/v1/users/' , userRouter)
   }
 
   public run() {

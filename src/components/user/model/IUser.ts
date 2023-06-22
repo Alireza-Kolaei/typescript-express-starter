@@ -1,5 +1,8 @@
 import UserRoles from './UserRoles';
-export default interface IUser {
+import {Document} from 'mongoose'
+
+export default interface IUser extends Document {
+  id: string;
   name: string;
   email: string;
   photo?: string ;

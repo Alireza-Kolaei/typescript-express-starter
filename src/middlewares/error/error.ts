@@ -4,6 +4,7 @@ import { Error as mongooseError } from 'mongoose';
 import { MongoError } from 'mongodb';
 import ApiError from '../../utils/ApiError';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import { log } from 'console';
 
 const handleCastErrorDB = (err: mongooseError.CastError) => {
   const message = `Invalid ${err.path}: ${err.value}.`;
@@ -52,17 +53,20 @@ const sendErrorProd = (err: ApiError, req: Request, res: Response) => {
 
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   err.statusCode = err.statusCode || 500;
-
+  console.log(err);
+  
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
    let error = {...err};
    
+   
 
     if (err instanceof mongooseError.CastError) error = handleCastErrorDB(err);
-    if (err instanceof MongoError && err.code === 11000) error = handleDuplicateFieldsDB(err);
-    if (err instanceof mongooseError.ValidationError) error = handleValidationErrorDB(err);
+    if (err.code === 11000) error = handleDuplicateFieldsDB(err);
+    if (error instanceof mongooseError.ValidationError) error = handleValidationErrorDB(err);
     if (err instanceof JsonWebTokenError) error = handleJWTError();
+    if (err.name == 'TokenExpiredError') error = handleJWTError();
 
     sendErrorProd(error , req, res);
   }
