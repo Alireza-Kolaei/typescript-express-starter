@@ -19,7 +19,7 @@ class RouteService {
     if (config.env === 'development') {
       this.router.registerRouter('/api/v1/docs', docsRouter);
     }
-    this.router.registerRouter('/api/v1/users/' , userRouter)
+    this.router.registerRouter('/api/v1/users/', userRouter);
   }
 
   public run() {

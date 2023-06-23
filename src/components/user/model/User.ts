@@ -3,7 +3,7 @@ import { Schema, model } from 'mongoose';
 import validator from 'validator';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import ApiError from '../../../utils/ApiError';
+import ApiError from '../../../utils/api-error';
 import httpStatus = require('http-status');
 import UserRoles from './UserRoles';
 
@@ -79,7 +79,6 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-
 userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next();
   this.passwordChangedAt = Date.now() - 1000;
@@ -95,7 +94,7 @@ userSchema.methods.correctPassword = async function (candidatePassword: string) 
   if (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
   }
-  return new ApiError(httpStatus.BAD_REQUEST , 'please provide your password')
+  return new ApiError(httpStatus.BAD_REQUEST, 'please provide your password');
 };
 
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp: number) {

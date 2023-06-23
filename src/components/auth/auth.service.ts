@@ -1,12 +1,13 @@
 import MongoRepository from '../../repository/mongo.repository';
 import User from '../user/model/User';
 import IUser from '../user/model/IUser';
-import ApiError from '../../utils/ApiError';
+import ApiError from '../../utils/api-error';
 import * as httpStatus from 'http-status';
-import { validateSignup } from '../../utils/Validators';
+// import { validateSignup } from '../../utils/Validators';
 import tokenTypes from '../../config/tokens';
 import TokenService from '../../services/token.service';
 import Token from '../token/token';
+import * as Joi from 'joi'
 
 export default class Auth {
   private userRepository: MongoRepository<IUser>;
@@ -18,21 +19,41 @@ export default class Auth {
   }
 
   public async signup(credentials: Partial<IUser>) {
-    try {
-      const validateResult = await validateSignup(credentials);
-      if (!validateResult) return validateResult;
-      const user = await this.userRepository.create(validateResult);
-      return user;
-      
-    } catch (error) {
-      console.log(error);
-    }
+    
+      const { name, password, email } = credentials;
+
+      const schema = Joi.object({
+        name: Joi.string().alphanum().min(3).max(30).required(),
+        password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+        email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'ir'] } }),
+      });
+
+      const { value , error} = schema.validate({ name, email, password }, { abortEarly: false });
+
+      if (error) {
+         throw new ApiError(httpStatus.BAD_REQUEST, 'Registration Failed, Bad Credentials.');
+      }
+
+
+      const user = await this.userRepository.findOneByParams({email})
+
+      if (user && user.isEmailVerified) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'User already exist.');
+      }
+
+      if (user && !user.isEmailVerified) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Please verify your email.');
+      }
+
+      const newUser = await this.userRepository.create(value);
+      return newUser as IUser;
+    
   }
 
   public async loginWithEmail(credentials: Partial<IUser>) {
     const { email, password } = credentials;
     const user = await User.findOne({ email }).select('+password');
-    if (!user || !( user.correctPassword(password as string))) {
+    if (!user || !user.correctPassword(password as string)) {
       throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
     }
     return user;

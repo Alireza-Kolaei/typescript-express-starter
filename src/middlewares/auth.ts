@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import config from '../config/config';
 import MongoRepository from '../repository/mongo.repository';
 import User from '../components/user/model/User';
-import ApiError from '../utils/ApiError';
+import ApiError from '../utils/api-error';
 import * as httpStatus from 'http-status';
 import * as jwt from 'jsonwebtoken';
 import TokenService from '../services/token.service';
@@ -35,7 +35,7 @@ export default class AuthMiddleware {
       if (!decoded) {
         throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'Token is not valid');
       }
-      
+
       const currentUser = await this.userRepository.findByID(decoded.sub as string);
 
       if (!currentUser) {

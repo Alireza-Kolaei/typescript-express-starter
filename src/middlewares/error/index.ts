@@ -1,6 +1,6 @@
 import { Application } from 'express';
 import * as httpStatus from 'http-status';
-import ApiError from '../../utils/ApiError';
+import ApiError from '../../utils/api-error';
 import { errorHandler } from './error';
 export default (app: Application) => {
   app.use((req, res, next) => {

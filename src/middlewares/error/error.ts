@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, ErrorRequestHandler } from 'express';
 
 import { Error as mongooseError } from 'mongoose';
 import { MongoError } from 'mongodb';
-import ApiError from '../../utils/ApiError';
+import ApiError from '../../utils/api-error';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { log } from 'console';
 
@@ -28,20 +28,18 @@ const handleValidationErrorDB = (err: mongooseError.ValidationError) => {
 const handleJWTError = () => new ApiError(401, 'Please log in again!');
 
 const sendErrorDev = (err: any, req: Request, res: Response) => {
-
-    res.status(err.statusCode).json({
-      success: false,
-      error: err,
-      message: err.message,
-      stack: err.stack,
-    });
-  
+  res.status(err.statusCode).json({
+    success: false,
+    error: err,
+    message: err.message,
+    stack: err.stack,
+  });
 };
 
 const sendErrorProd = (err: ApiError, req: Request, res: Response) => {
   if (err.isOperational) {
     return res.status(err.statusCode).json({
-      success: false ,
+      success: false,
       message: err.message,
     });
   }
@@ -53,14 +51,12 @@ const sendErrorProd = (err: ApiError, req: Request, res: Response) => {
 
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   err.statusCode = err.statusCode || 500;
-  console.log(err);
-  
+  // console.log(err);
+
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
-   let error = {...err};
-   
-   
+    let error = { ...err };
 
     if (err instanceof mongooseError.CastError) error = handleCastErrorDB(err);
     if (err.code === 11000) error = handleDuplicateFieldsDB(err);
@@ -68,7 +64,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
     if (err instanceof JsonWebTokenError) error = handleJWTError();
     if (err.name == 'TokenExpiredError') error = handleJWTError();
 
-    sendErrorProd(error , req, res);
+    sendErrorProd(error, req, res);
   }
 };
 export { errorHandler };

@@ -26,7 +26,7 @@ export default class TokenService {
     };
     return jwt.sign(payload, secret);
   }
-  
+
   public async generateAuthTokens(user: IUser) {
     const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
     const accessToken = this.generateToken(user.id, accessTokenExpires, tokenTypes.ACCESS);
@@ -46,7 +46,7 @@ export default class TokenService {
       },
     };
   }
-  
+
   public async verifyToken(token: string, type: tokenTypes) {
     const payload = jwt.verify(token, config.jwt.secret);
     const tokenDoc = await Token.findOne({ token, type, user: payload.sub, blacklisted: false });

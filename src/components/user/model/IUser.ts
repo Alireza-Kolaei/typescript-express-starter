@@ -1,19 +1,19 @@
 import UserRoles from './UserRoles';
-import {Document} from 'mongoose'
+import { Document } from 'mongoose';
 
 export default interface IUser extends Document {
   id: string;
   name: string;
   email: string;
-  photo?: string ;
+  photo?: string;
   role: UserRoles;
   isEmailVerified: boolean;
-  password: string ;
+  password: string;
   active: boolean;
   passwordChangedAt: Date;
-  passwordResetToken?: string ;
-  passwordResetExpires?: Date ;
-  changedPasswordAfter(JWTTimestamp : number): boolean;
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
+  changedPasswordAfter(JWTTimestamp: number): boolean;
   correctPassword(candidatePassword: string): boolean;
   createPasswordResetToken(): string;
 }

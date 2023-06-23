@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import * as httpStatus from 'http-status';
-import ApiError from '../../utils/ApiError';
+import ApiError from '../../utils/api-error';
 import Auth from './auth.service';
 import catchAsync from '../../utils/catchAsync';
 import TokenService from '../../services/token.service';
+import IUser from '../user/model/IUser';
 
 export default class AuthController {
   private authService: Auth;
@@ -16,12 +17,15 @@ export default class AuthController {
 
   public signup = catchAsync(async (req: Request, res: Response) => {
     const user = await this.authService.signup({
-      name : req.body.name,
-      email : req.body.email,
-      password : req.body.password,
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
     });
-    if (!user) throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Registration Failed');
-    const tokens = await this.tokenService.generateAuthTokens(user);
+
+    
+
+
+    const tokens = await this.tokenService.generateAuthTokens(user as IUser);
     res.send({ user, tokens });
   });
 
