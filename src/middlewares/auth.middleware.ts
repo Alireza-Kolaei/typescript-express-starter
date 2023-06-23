@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import config from '../config/config';
-import MongoRepository from '../repository/mongo.repository';
-import User from '../components/user/model/User';
-import ApiError from '../utils/api-error';
+import MongoRepository from '../repository/global-mongo.repository';
+import User from '../components/user/model/user.schema';
+import ApiError from '../utils/api-error.helper';
 import * as httpStatus from 'http-status';
 import * as jwt from 'jsonwebtoken';
 import TokenService from '../services/token.service';
-import IUser from 'src/components/user/model/IUser';
+import IUser from 'src/components/user/model/user.interface';
 
 export default class AuthMiddleware {
   private userRepository: MongoRepository<IUser>;

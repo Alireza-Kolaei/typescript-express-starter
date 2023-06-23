@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { NextFunction, Request, Response } from 'express';
-import User from './model/User';
-import MongoRepository from '../../repository/mongo.repository';
-import IUser from './model/IUser';
-import catchAsync from '../../utils/catchAsync';
+import User from './model/user.schema';
+import MongoRepository from '../../repository/global-mongo.repository';
+import IUser from './model/user.interface';
+import catchAsync from '../../utils/catch-async.helper';
 import { log } from 'winston';
-import { AuthenticatedRequest } from './model/IAuthenticatedRequest';
+import { AuthenticatedRequest } from './model/authenticated-request.interface';
 
 class UsersController {
   private readonly userRepository: MongoRepository<IUser>;

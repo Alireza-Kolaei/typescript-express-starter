@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import IRepository from './IRepository';
+import IRepository from './repository.interface';
 
 export default class MongoRepository<T> implements IRepository<T> {
   private model: Model<T>;

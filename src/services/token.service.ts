@@ -1,9 +1,9 @@
 import config from '../config/config';
-import IUser from '../components/user/model/IUser';
+import IUser from '../components/user/model/user.interface';
 import * as moment from 'moment';
 import * as jwt from 'jsonwebtoken';
 import tokenTypes from '../config/tokens';
-import Token from '../components/token/token';
+import Token from '../components/token/token.schema';
 
 export default class TokenService {
   private saveToken = async (token: string, userId: string, expires: any, type: tokenTypes, blacklisted = false) => {

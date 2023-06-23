@@ -1,9 +1,9 @@
 import { Application, Router } from 'express';
-import RouteEngine from './router';
-import authRouter from '../components/auth/router';
+import RouteEngine from './router-engine';
+import authRouter from '../components/auth/auth.router';
 import docsRouter from '../components/docs/router';
 import config from '../config/config';
-import userRouter from '../components/user/UserRouter';
+import userRouter from '../components/user/user.router';
 
 class RouteService {
   private app: Application;

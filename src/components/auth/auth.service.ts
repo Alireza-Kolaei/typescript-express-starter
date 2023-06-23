@@ -1,12 +1,12 @@
-import MongoRepository from '../../repository/mongo.repository';
-import User from '../user/model/User';
-import IUser from '../user/model/IUser';
-import ApiError from '../../utils/api-error';
+import MongoRepository from '../../repository/global-mongo.repository';
+import User from '../user/model/user.schema';
+import IUser from '../user/model/user.interface';
+import ApiError from '../../utils/api-error.helper';
 import * as httpStatus from 'http-status';
 // import { validateSignup } from '../../utils/Validators';
 import tokenTypes from '../../config/tokens';
 import TokenService from '../../services/token.service';
-import Token from '../token/token';
+import Token from '../token/token.schema';
 import * as Joi from 'joi'
 
 export default class Auth {

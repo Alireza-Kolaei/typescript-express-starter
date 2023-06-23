@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import * as httpStatus from 'http-status';
-import ApiError from '../../utils/api-error';
+import ApiError from '../../utils/api-error.helper';
 import Auth from './auth.service';
-import catchAsync from '../../utils/catchAsync';
+import catchAsync from '../../utils/catch-async.helper';
 import TokenService from '../../services/token.service';
-import IUser from '../user/model/IUser';
+import IUser from '../user/model/user.interface';
 
 export default class AuthController {
   private authService: Auth;

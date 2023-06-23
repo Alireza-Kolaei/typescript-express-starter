@@ -1,11 +1,11 @@
-import IUser from './IUser';
+import IUser from './user.interface';
 import { Schema, model } from 'mongoose';
 import validator from 'validator';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import ApiError from '../../../utils/api-error';
+import ApiError from '../../../utils/api-error.helper';
 import httpStatus = require('http-status');
-import UserRoles from './UserRoles';
+import UserRoles from './user-roles.schema';
 
 const userSchema: Schema = new Schema<IUser>(
   {

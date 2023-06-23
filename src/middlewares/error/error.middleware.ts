@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response, ErrorRequestHandler } from 'express';
-
 import { Error as mongooseError } from 'mongoose';
 import { MongoError } from 'mongodb';
-import ApiError from '../../utils/api-error';
+import ApiError from '../../utils/api-error.helper';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
-import { log } from 'console';
+
 
 const handleCastErrorDB = (err: mongooseError.CastError) => {
   const message = `Invalid ${err.path}: ${err.value}.`;

@@ -1,8 +1,8 @@
 import * as express from 'express';
 import { Application } from 'express';
-import RouteService from './router/routeService';
+import RouteService from './router/router.service';
 import exceptionHandler from './middlewares/error/index';
-import bootstrap from './bootstrap';
+import bootstrap from './middlewares/boot.middleware';
 import logger from './config/logger';
 import config from './config/config';
 
