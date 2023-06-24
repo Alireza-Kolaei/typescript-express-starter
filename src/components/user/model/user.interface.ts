@@ -1,4 +1,4 @@
-import UserRoles from './user-roles.schema';
+import UserRoles from './user-roles.enum';
 import { Document } from 'mongoose';
 
 export default interface IUser extends Document {

@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import tokenTypes from '../../config/tokens';
+import tokenTypes from './token-types.enum';
 
 const tokenSchema = new Schema(
   {

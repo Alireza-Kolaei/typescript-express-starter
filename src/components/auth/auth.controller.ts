@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import * as httpStatus from 'http-status';
 import ApiError from '../../utils/api-error.helper';
 import Auth from './auth.service';
@@ -21,9 +21,6 @@ export default class AuthController {
       email: req.body.email,
       password: req.body.password,
     });
-
-    
-
 
     const tokens = await this.tokenService.generateAuthTokens(user as IUser);
     res.send({ user, tokens });

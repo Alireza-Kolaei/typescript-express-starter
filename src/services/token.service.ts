@@ -2,7 +2,7 @@ import config from '../config/config';
 import IUser from '../components/user/model/user.interface';
 import * as moment from 'moment';
 import * as jwt from 'jsonwebtoken';
-import tokenTypes from '../config/tokens';
+import tokenTypes from '../components/token/token-types.enum';
 import Token from '../components/token/token.schema';
 
 export default class TokenService {

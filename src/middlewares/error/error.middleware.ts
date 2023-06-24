@@ -4,7 +4,6 @@ import { MongoError } from 'mongodb';
 import ApiError from '../../utils/api-error.helper';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 
-
 const handleCastErrorDB = (err: mongooseError.CastError) => {
   const message = `Invalid ${err.path}: ${err.value}.`;
   return new ApiError(400, message);

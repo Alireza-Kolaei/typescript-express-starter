@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import ApiError from '../../../utils/api-error.helper';
 import httpStatus = require('http-status');
-import UserRoles from './user-roles.schema';
+import UserRoles from './user-roles.enum';
 
 const userSchema: Schema = new Schema<IUser>(
   {
