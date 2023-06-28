@@ -11,7 +11,7 @@ import IToken from '../token/token.interface';
 
 export default class Auth {
   private userRepository: MongoRepository<IUser>;
-  private tokenRepositroy: MongoRepository<IToken>;
+  private tokenRepository: MongoRepository<IToken>;
   private tokenService: TokenService;
   constructor() {
     this.userRepository = new MongoRepository(User);
